@@ -13,6 +13,8 @@ from .models import SearchLog
 from flower_dict import class_to_flower
 from torchvision.models import resnet50, ResNet50_Weights
 
+from django.core.exceptions import ObjectDoesNotExist
+
 # Load models
 with open('trained_models/bankchurn.pkl', 'rb') as f:
     model = pickle.load(f)
@@ -94,3 +96,21 @@ def classify_image(request):
             return JsonResponse({'error': str(e)}, status=400)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+def returnData(request):
+    if request.method == 'GET':
+        name = request.GET.get('name', None)
+        
+        if not name:
+            return JsonResponse({'error': 'Name parameter is missing'}, status=400)
+        
+        try:
+            data_request = SearchLog.objects.filter(first_name=name).values('first_name', 'last_name', 'searchTime')
+            data_request_list = list(data_request)
+            return JsonResponse(data_request_list, safe=False)
+        
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'No data found for the specified name'}, status=404)
+        
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
