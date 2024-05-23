@@ -14,14 +14,14 @@ from flower_dict import class_to_flower
 from torchvision.models import resnet50, ResNet50_Weights
 
 # Load models
-with open('trained_models\bankchurn.pkl', 'rb') as f:
+with open('trained_models/bankchurn.pkl', 'rb') as f:
     model = pickle.load(f)
 
 # Load Image Classification Model
 def load_model_ic():
     model_ic = models.resnet50(weights=ResNet50_Weights.DEFAULT)
     model_ic.fc = nn.Linear(model_ic.fc.in_features, 1000)
-    model_ic.load_state_dict(torch.load('trained_models\oxford102flowers.pth', map_location=torch.device('cpu')))
+    model_ic.load_state_dict(torch.load('trained_models/oxford102flowers.pth', map_location=torch.device('cpu')))
     model_ic.eval()
     return model_ic
 

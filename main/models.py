@@ -11,7 +11,7 @@ class SearchLog(models.Model):
     Age = models.IntegerField()
     Tenure = models.IntegerField()
     Balance = models.FloatField()
-    NumOfProductsts = models.IntegerField()
+    NumOfProducts = models.IntegerField()
     HasCrCard = models.IntegerField()
     IsActiveMember = models.IntegerField()
     EstimatedSalary = models.FloatField()

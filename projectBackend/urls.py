@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from main import views
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('score_json', csrf_exempt(views.score_json), name="Score Json"),
+    path('classify_image', csrf_exempt(views.classify_image), name="Image Classification"),
 ]
