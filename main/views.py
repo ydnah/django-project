@@ -37,7 +37,7 @@ def initialize_new_model(model):
     new_model.fc.bias.data = model.fc.bias.data[:102]
     return new_model
 
-new_model_oxforf102 = initialize_new_model(model_oxford102)
+new_model_oxford102 = initialize_new_model(model_oxford102)
 
 # Create search log
 def create_search_log(data):
@@ -88,7 +88,7 @@ def classify_image(request):
             ])
             input_tensor = preprocess(image).unsqueeze(0)
             with torch.no_grad():
-                output = modelIC(input_tensor)
+                output = model_oxford102(input_tensor)
             _, predicted_class = output.max(1)
             predicted_class_name = class_to_flower[predicted_class.item()]
             return JsonResponse({'predicted class': predicted_class_name})
