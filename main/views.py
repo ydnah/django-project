@@ -17,27 +17,27 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # Load models
 with open('trained_models/bankchurn.pkl', 'rb') as f:
-    model = pickle.load(f)
+    model_churn = pickle.load(f)
 
 # Load Image Classification Model
-def load_model_ic():
-    model_ic = models.resnet50(weights=ResNet50_Weights.DEFAULT)
-    model_ic.fc = nn.Linear(model_ic.fc.in_features, 1000)
-    model_ic.load_state_dict(torch.load('trained_models/oxford102flowers.pth', map_location=torch.device('cpu')))
-    model_ic.eval()
-    return model_ic
+def load_model_oxford102():
+    model = models.resnet50(weights=ResNet50_Weights.DEFAULT)
+    model.fc = nn.Linear(model.fc.in_features, 1000)
+    model.load_state_dict(torch.load('trained_models/oxford102flowers.pth', map_location=torch.device('cpu')))
+    model.eval()
+    return model
 
-modelIC = load_model_ic()
+model_oxford102 = load_model_oxford102()
 
 # Initialize new model with adjusted weights
-def initialize_new_model(modelIC):
+def initialize_new_model(model):
     new_model = models.resnet50(weights=ResNet50_Weights.DEFAULT)
-    new_model.fc = nn.Linear(new_model.fc.in_features, 102)
-    new_model.fc.weight.data = modelIC.fc.weight.data[:102]
-    new_model.fc.bias.data = modelIC.fc.bias.data[:102]
+    new_model.fc = nn.Linear(model.fc.in_features, 102)
+    new_model.fc.weight.data = model.fc.weight.data[:102]
+    new_model.fc.bias.data = model.fc.bias.data[:102]
     return new_model
 
-new_model = initialize_new_model(modelIC)
+new_model_oxforf102 = initialize_new_model(model_oxford102)
 
 # Create search log
 def create_search_log(data):
@@ -67,7 +67,7 @@ def score_json(request):
             data = json.loads(request.body)
             create_search_log(data)
             df = pd.DataFrame({'x': data}).transpose().iloc[:, 2:]
-            score = model.predict(df)
+            score = model_churn.predict(df)
             return JsonResponse({'score': float(score)})
         except json.decoder.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
