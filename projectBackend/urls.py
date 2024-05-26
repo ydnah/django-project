@@ -22,6 +22,6 @@ from django.views.decorators.csrf import csrf_exempt
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('score_json/', csrf_exempt(views.score_json), name="Score Json"),
-    path('classify_image/', csrf_exempt(views.classify_image), name="Image Classification"),
-    path('data_request/', csrf_exempt(views.returnData), name="data_request")
+    # path('classify_image/', csrf_exempt(views.classify_image), name="Image Classification"),
+    # path('data_request/', csrf_exempt(views.returnData), name="data_request")
 ]
